@@ -14,6 +14,17 @@ pipeline {
             }
         }
 
+        stage('SonarQube代码审查') {
+            steps{
+                script {
+                    scannerHome = tool 'sonarqube-scanner'
+                }
+                withSonarQubeEnv('sonarqube6.7.4') {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+            }
+         }
+
         stage('publish project') {
             steps {
                 deploy adapters: [tomcat8(credentialsId: '9018a1df-f69b-4566-b757-3367d6c5fefa', path: '', url: 'http://124.223.5.50:8081/')], contextPath: null, war: 'target/*.war'
